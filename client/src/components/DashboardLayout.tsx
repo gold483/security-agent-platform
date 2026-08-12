@@ -21,15 +21,19 @@ import {
 } from "@/components/ui/sidebar";
 import { startLogin } from "@/const";
 import { useIsMobile } from "@/hooks/useMobile";
-import { LayoutDashboard, LogOut, PanelLeft, Users } from "lucide-react";
+import { Activity, FileClock, LayoutDashboard, LogOut, MonitorUp, PanelLeft, ShieldAlert, ShieldCheck } from "lucide-react";
 import { CSSProperties, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { DashboardLayoutSkeleton } from './DashboardLayoutSkeleton';
 import { Button } from "./ui/button";
 
 const menuItems = [
-  { icon: LayoutDashboard, label: "Page 1", path: "/" },
-  { icon: Users, label: "Page 2", path: "/some-path" },
+  { icon: LayoutDashboard, label: "관제 개요", path: "/" },
+  { icon: Activity, label: "에이전트", path: "/agents" },
+  { icon: ShieldAlert, label: "Quarantine", path: "/quarantine" },
+  { icon: ShieldCheck, label: "검사 명령", path: "/commands" },
+  { icon: MonitorUp, label: "RDP 원격제어", path: "/rdp" },
+  { icon: FileClock, label: "감사 로그", path: "/audit" },
 ];
 
 const SIDEBAR_WIDTH_KEY = "sidebar-width";
@@ -46,7 +50,7 @@ export default function DashboardLayout({
     const saved = localStorage.getItem(SIDEBAR_WIDTH_KEY);
     return saved ? parseInt(saved, 10) : DEFAULT_WIDTH;
   });
-  const { loading, user } = useAuth();
+  const { loading, user, logout } = useAuth();
 
   useEffect(() => {
     localStorage.setItem(SIDEBAR_WIDTH_KEY, sidebarWidth.toString());
@@ -75,6 +79,19 @@ export default function DashboardLayout({
           >
             Sign in
           </Button>
+        </div>
+      </div>
+    );
+  }
+
+  if (user.role !== "admin") {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background px-6">
+        <div className="max-w-md rounded-3xl border border-border bg-card p-10 text-center shadow-xl">
+          <ShieldAlert className="mx-auto mb-5 h-10 w-10 text-amber-500" />
+          <h1 className="text-2xl font-semibold tracking-tight">관리자 권한이 필요합니다</h1>
+          <p className="mt-3 text-sm leading-6 text-muted-foreground">보안관제 기능은 관리자 계정만 접근할 수 있습니다. 관리자 계정으로 다시 로그인해 주세요.</p>
+          <Button onClick={logout} className="mt-7 w-full">로그아웃</Button>
         </div>
       </div>
     );
@@ -168,9 +185,11 @@ function DashboardLayoutContent({
               </button>
               {!isCollapsed ? (
                 <div className="flex items-center gap-2 min-w-0">
-                  <span className="font-semibold tracking-tight truncate">
-                    Navigation
-                  </span>
+                  <div className="brand-mark"><ShieldCheck className="h-4 w-4" /></div>
+                  <div className="min-w-0">
+                    <span className="brand-wordmark">Sentinel</span>
+                    <span className="brand-submark">보안관제</span>
+                  </div>
                 </div>
               ) : null}
             </div>

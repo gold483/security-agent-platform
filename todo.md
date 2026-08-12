@@ -16,7 +16,7 @@
 - [x] Run type checking, tests, production build, and visual preview verification
 - [x] Save the completed project checkpoint
 
-- [ ] Connect the deployed Apache Guacamole/guacd endpoint through a production `GUACAMOLE_BASE_URL` secret
+- [x] Connect the deployed Apache Guacamole/guacd endpoint through a production `GUACAMOLE_BASE_URL` secret
 
 ## History
 
